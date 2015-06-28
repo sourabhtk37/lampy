@@ -1,2 +1,20 @@
-# glamp
-Apache GUI configuration tool for Linux (Python)
+# Glampy
+##Apache GUI configuration tool for Linux
+###Glampy is open source and written in Python and GTK2.
+_Current preview development/alpha version runs on most systemd-based Linux distributions._
+_The first release should be expected very soon._
+
+_In the roadmap is moving to GTK3/GTK.Builder/PyGObject_
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program. If not, see <http://www.gnu.org/licenses/>.
