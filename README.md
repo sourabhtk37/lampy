@@ -1,7 +1,7 @@
 # Glampy
 ##Apache GUI configuration tool for Linux
 ###Glampy is open source and written in Python and GTK2.
-_Current preview development/alpha version runs on most systemd-based Linux distributions._
+_Current development version preview runs on most systemd-based Linux distributions._
 _The first release should be expected very soon._
 
 _In the roadmap is moving to GTK3/GTK.Builder/PyGObject_
