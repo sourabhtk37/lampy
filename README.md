@@ -5,7 +5,7 @@ _Current development version preview runs on most systemd-based Linux distributi
 
 _The first release should be expected very soon._
 
-_In the roadmap is moving to GTK3/GTK.Builder/PyGObject_
+_On the roadmap is moving to GTK3/GTK.Builder/PyGObject_
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
