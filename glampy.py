@@ -6,5 +6,5 @@ class Glamp:
         self.main_window = gui.window.Main()
         self.main_window.main()
 
-
-app = Glamp()
+if __name__ == '__main__':
+    Glamp()

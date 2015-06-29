@@ -1,5 +1,4 @@
 import gtk
-
 import common.config
 
 
@@ -57,9 +56,11 @@ class Main(gtk.Window):
         self.gtk_main_controls.add(save_control)
 
     def build_sites_table(self):
-        print ('build sites table')
+        sites = common.config.Config().open()
+        for site in sites:
+            self.sites_table_add(site)
 
-    def sites_table_add(self):
+    def sites_table_add(self, directives={}):
         controls = {
             'server': gtk.Entry(),
             'folder': gtk.FileChooserButton('Folder'),
@@ -67,8 +68,12 @@ class Main(gtk.Window):
             'remove': gtk.Button('Remove'),
             'enable': gtk.Button('Enable'),
         }
-
         controls['folder'].set_action(gtk.FILE_CHOOSER_ACTION_SELECT_FOLDER)
+
+        if 'ServerName' in directives and directives['ServerName']:
+            controls['server'].set_text(directives['ServerName'])
+        if 'DocumentRoot' in directives and directives['DocumentRoot']:
+            controls['folder'].set_current_folder(directives['DocumentRoot'])
 
         controls['config'].connect('clicked', self.on_config_clicked)
         controls['remove'].connect('clicked', self.on_remove_clicked)
@@ -92,7 +97,6 @@ class Main(gtk.Window):
     def sites_table_remove(self, index):
         self.gtk_sites_table['container'].remove(self.gtk_sites_table['children'][index])
         self.gtk_sites_table['children'][index].destroy()
-
         self.gtk_sites_table['container'].check_resize()
         self.resize(1, 1)
 
@@ -101,8 +105,10 @@ class Main(gtk.Window):
         del self.gtk_sites_table['children'][index]
 
     def on_config_clicked(self, button):
-        Config("some server", "some folder")
-        print ('config')
+        index = self.gtk_sites_table['controls']['config'].index(button)
+        server = self.gtk_sites_table['controls']['server'][index].get_text()
+        folder = self.gtk_sites_table['controls']['folder'][index].get_current_folder()
+        Config(index, server, folder)
 
     def on_enable_clicked(self, button):
         print ('enable')
@@ -115,20 +121,21 @@ class Main(gtk.Window):
         self.sites_table_add()
 
     def on_save_clicked(self, button):
-        print ('derp')
+        print ('save')
 
     def main(self):
         gtk.main()
 
 
 class Config(gtk.Window):
-    def __init__(self, server, folder):
+    def __init__(self, index, server, folder):
         super(Config, self).__init__(gtk.WINDOW_TOPLEVEL)
 
         self.set_position(gtk.WIN_POS_CENTER)
         self.set_modal(True)
         self.set_title(server)
 
+        self.index = index
         self.server = server
         self.folder = folder
 
@@ -169,22 +176,25 @@ class Config(gtk.Window):
             cell.connect('edited', self.on_cell_edited, col)
             self.gtk_config_tree.append_column(gtk.TreeViewColumn(title, cell, text=col))
 
-        self.config_tree_add('ServerName', 'localhost')
-        self.config_tree_add('DocumentRoot', '/var/www/html')
+        sites = common.config.Config().open()
 
-    def config_tree_add(self, name, value):
+        if self.index < len(sites) and len(sites[self.index]):
+            for name, value in sites[self.index].iteritems():
+                self.config_tree_add(name, value)
+        else:
+            self.config_tree_add('ServerName', self.server)
+            self.config_tree_add('DocumentRoot', self.folder)
+
+    def config_tree_add(self, name=None, value=None):
         self.gtk_config_model.append([name, value])
         self.gtk_config_tree.show_all()
 
     def on_add_clicked(self, button):
-        self.config_tree_add('', '')
+        self.config_tree_add(None, None)
 
     def on_save_clicked(self, button):
-        directives = []
-        for row in self.gtk_config_model:
-            directives.append(row)
-        config = common.config.Config(self.server, self.folder)
-        config.save(directives)
+        config = common.config.Config()
+        config.save(self.index, self.gtk_config_model)
 
     def on_cell_edited(self, cell, path, text, col):
         self.gtk_config_model[path][col] = text
