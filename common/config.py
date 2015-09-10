@@ -21,34 +21,37 @@ class Config(object):
         if not os.path.exists(os.path.dirname(self.config_file)):
             os.makedirs(os.path.dirname(self.config_file))
 
-    def save(self, index, directives=[]):
-        content = self.open()
-        count = len(content)
-        dict_directives = {}
-
-        for directive in directives:
-            dict_directives[directive[0]] = directive[1]
-
-        if index > count:
-            # Adding site before saving previous in list
-            # @todo raise exception?
-            return
-
-        if index == count:
-            content.append(dict_directives)
-        else:
-            content[index] = dict_directives
-
+    def write(self, content):
         with open(self.config_file, 'w') as f:
             json.dump(content, f)
 
-    def open(self):
+    def read(self):
         with open(self.config_file, 'r') as f:
             content = f.read()
         if not content:
             return [{}]
         return json.loads(content)
 
+    def update(self, index, directives={}):
+        content = self.read()
+        count = len(content)
+
+        if index > count:
+            # Adding site before saving previous in list
+            return
+        if index == count:
+            content.append(directives)
+        else:
+            content[index].update(directives)
+        self.write(content)
+
+    def remove(self, index=[]):
+        if index:
+            content = self.read()
+            for i in sorted(index, reverse=True):
+                if i < len(content):
+                    del content[i]
+            self.write(content)
 
 def config_file():
     return os.path.expanduser('~') + '/' + APP_DIR + '/sites.json'

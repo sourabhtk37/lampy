@@ -3,28 +3,21 @@ import common.config
 
 
 class Main(gtk.Window):
+
     def __init__(self):
         super(Main, self).__init__(gtk.WINDOW_TOPLEVEL)
 
         self.set_position(gtk.WIN_POS_CENTER)
         self.connect('destroy', gtk.main_quit)
-        self.set_title('Glamp')
+        self.set_title('Glampy')
 
         self.gtk_layout = gtk.VBox()
         self.gtk_tabs = gtk.Notebook()
         self.gtk_main_controls = gtk.HButtonBox()
 
-        self.gtk_sites_table = {
-            'container': gtk.VBox(),
-            'children': [],
-            'controls': {
-                'server': [],
-                'folder': [],
-                'config': [],
-                'remove': [],
-                'enable': [],
-            }
-        }
+        self.site_list = common.config.Config().read()
+
+        self.gtk_sites_table = {}
 
         self.build_main_controls()
         self.build_sites_table()
@@ -56,9 +49,26 @@ class Main(gtk.Window):
         self.gtk_main_controls.add(save_control)
 
     def build_sites_table(self):
-        sites = common.config.Config().open()
-        for site in sites:
+        self.gtk_sites_table = {
+            'container': gtk.VBox(),
+            'children': [],
+            'controls': {
+                'server': [],
+                'folder': [],
+                'config': [],
+                'remove': [],
+                'enable': [],
+            }
+        }
+        for site in self.site_list:
             self.sites_table_add(site)
+
+    def reset_sites_table(self):
+        self.site_list = common.config.Config().read()
+        self.gtk_sites_table['container'].destroy()
+        self.build_sites_table()
+        self.gtk_layout.add(self.gtk_sites_table['container'])
+        self.resize(1, 1)
 
     def sites_table_add(self, directives={}):
         controls = {
@@ -108,28 +118,36 @@ class Main(gtk.Window):
         index = self.gtk_sites_table['controls']['config'].index(button)
         server = self.gtk_sites_table['controls']['server'][index].get_text()
         folder = self.gtk_sites_table['controls']['folder'][index].get_current_folder()
-        Config(index, server, folder)
+        Config(self, index, server, folder)
 
     def on_enable_clicked(self, button):
         print ('enable')
 
     def on_remove_clicked(self, button):
         index = self.gtk_sites_table['controls']['remove'].index(button)
+        self.site_list.pop(index)
         self.sites_table_remove(index)
 
     def on_add_clicked(self, button):
+        self.site_list.append({'ServerName': '', 'DocumentRoot': ''})
         self.sites_table_add()
 
     def on_save_clicked(self, button):
-        print ('save')
+        for index, site in enumerate(self.site_list):
+            server = self.gtk_sites_table['controls']['server'][index].get_text()
+            folder = self.gtk_sites_table['controls']['folder'][index].get_current_folder()
+            site.update({'DocumentRoot': folder, 'ServerName': server})
+        common.config.Config().write(self.site_list)
+        self.reset_sites_table()
 
     def main(self):
         gtk.main()
 
-
 class Config(gtk.Window):
-    def __init__(self, index, server, folder):
+    def __init__(self, main_window, index, server, folder):
         super(Config, self).__init__(gtk.WINDOW_TOPLEVEL)
+
+        self.main_window = main_window
 
         self.set_position(gtk.WIN_POS_CENTER)
         self.set_modal(True)
@@ -169,15 +187,13 @@ class Config(gtk.Window):
 
     def build_config_tree(self):
         cols = ['Directive', 'Value']
-
         for col, title in enumerate(cols):
             cell = gtk.CellRendererText()
             cell.set_property('editable', True)
             cell.connect('edited', self.on_cell_edited, col)
             self.gtk_config_tree.append_column(gtk.TreeViewColumn(title, cell, text=col))
 
-        sites = common.config.Config().open()
-
+        sites = common.config.Config().read()
         if self.index < len(sites) and len(sites[self.index]):
             for name, value in sites[self.index].iteritems():
                 self.config_tree_add(name, value)
@@ -193,8 +209,11 @@ class Config(gtk.Window):
         self.config_tree_add(None, None)
 
     def on_save_clicked(self, button):
-        config = common.config.Config()
-        config.save(self.index, self.gtk_config_model)
+        directives = {}
+        for directive in self.gtk_config_model:
+            directives[directive[0]] = directive[1]
+        common.config.Config().update(self.index, directives)
+        self.main_window.reset_sites_table()
 
     def on_cell_edited(self, cell, path, text, col):
         self.gtk_config_model[path][col] = text
