@@ -1,8 +1,6 @@
 # Glampy
 ##Apache GUI configuration tool for Linux
-###Glampy is being rewritten in Vala and has been moved to [glamp](https://github.com/seht/glamp)
-
-_Glampy is open source and written in Python and GTK+3_
+###As much as we like the Life of Brian, Glampy is now being rewritten in Vala and has definitively been renamed to [glamp](https://github.com/seht/glamp)
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
