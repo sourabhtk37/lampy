@@ -1,5 +1,6 @@
-from gi.repository import Gtk
 from collections import OrderedDict
+
+from gi.repository import Gtk
 
 from glampy.common.sites import Sites
 

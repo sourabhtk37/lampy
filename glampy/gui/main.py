@@ -1,7 +1,9 @@
-from gi.repository import Gtk
 from collections import OrderedDict
 
+from gi.repository import Gtk
+
 from glampy.common.sites import Sites
+
 
 
 # @todo separate events class
@@ -11,9 +13,9 @@ class Main(object):
 
         self.gtk_builder = Gtk.Builder()
 
-        self.ui_layout = self.gtk_builder.new_from_file("gui/glade/main_window.glade")
-        self.ui_sites_list_container = self.gtk_builder.new_from_file("gui/glade/sites_list_container.glade")
-        self.ui_sites_edit_container = self.gtk_builder.new_from_file("gui/glade/sites_edit_container.glade")
+        self.ui_layout = self.gtk_builder.new_from_file("glampy/gui/glade/main_window.glade")
+        self.ui_sites_list_container = self.gtk_builder.new_from_file("glampy/gui/glade/sites_list_container.glade")
+        self.ui_sites_edit_container = self.gtk_builder.new_from_file("glampy/gui/glade/sites_edit_container.glade")
 
         self.gtk_main_window = self.ui_layout.get_object("main_window")
 
@@ -68,6 +70,8 @@ class Main(object):
 
         self.build_list_nav()
         self.build_conf_tree()
+        
+        self.gtk_main_window.connect("delete-event", Gtk.main_quit)
 
         self.gtk_main_window.show_all()
 
