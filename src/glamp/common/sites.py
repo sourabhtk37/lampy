@@ -11,7 +11,7 @@ class Sites(object):
 
     @staticmethod
     def file():
-        return os.path.expanduser('~') + '/.glampy/sites.json'
+        return os.path.expanduser('~') + '/.glamp/sites.json'
 
     def read(self):
         with open(self.file, 'r') as f:

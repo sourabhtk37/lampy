@@ -1,9 +1,7 @@
 from collections import OrderedDict
-
 from gi.repository import Gtk
 
-from glampy.common.sites import Sites
-
+from glamp.common.sites import Sites
 
 class Conf(Gtk.Window):
     def __init__(self, main, index):
