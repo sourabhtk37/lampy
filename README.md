@@ -1,6 +1,5 @@
-# Glampy
+# Glamp
 ##Apache GUI configuration tool for Linux
-###As much as we enjoyed the Life of Brian, Glampy is now being rewritten in Vala and has definitively been renamed to [glamp](https://github.com/seht/glamp)
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
