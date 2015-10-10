@@ -6,12 +6,13 @@ from collections import OrderedDict
 class Sites(object):
     def __init__(self):
         self.file = self.file()
-        if not os.path.exists(os.path.dirname(self.file)):
-            os.makedirs(os.path.dirname(self.file))
+        if not os.path.isfile(self.file):
+            if not os.path.exists(os.path.dirname(self.file)):
+                os.makedirs(os.path.dirname(self.file))
+            open(self.file, 'a').close()
 
-    @staticmethod
-    def file():
-        return os.path.expanduser('~') + '/.glamp/sites.json'
+    def file(self):
+        return os.path.expanduser('~') + "/.glamp/sites.json"
 
     def read(self):
         with open(self.file, 'r') as f:
