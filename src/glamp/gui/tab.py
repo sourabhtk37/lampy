@@ -2,8 +2,6 @@ from gi.repository import Gtk
 from collections import OrderedDict
 from glamp.common.sites import Sites
 
-# @todo separate events class, connect through builder
-
 class SitesTab(Gtk.Box):
      
     def __new__(cls, main_window):
@@ -12,10 +10,9 @@ class SitesTab(Gtk.Box):
         return sites_tab_container
     
     def __init__(self, main_window):
-        # Gtk.ApplicationWindow.__init__(self)
-        # super(MainWindow, self).__init__()
-
         self.main_window = main_window
+
+        self.sites = Sites().read()
 
         self.sites_list_view = self.main_window.builder.get_object("sites_list_view")
         self.sites_edit_view = self.main_window.builder.get_object("sites_edit_view")
@@ -25,12 +22,9 @@ class SitesTab(Gtk.Box):
         self.sites_conf_container = self.main_window.builder.get_object("sites_conf_container")
 
         self.sites_list_nav = self.main_window.builder.get_object("sites_list_nav")
-
+        self.sites_list_nav.connect('row-activated', self.on_list_nav_activated)
         self.sites_list_nav_activated = None
 
-        self.sites = Sites().read()
-
-        # edit_button_undo = Gtk.Button(stock=Gtk.STOCK_UNDO)
         edit_button_remove = Gtk.Button(stock=Gtk.STOCK_REMOVE)
         edit_button_add = Gtk.Button(stock=Gtk.STOCK_ADD)
         edit_button_save = Gtk.Button(stock=Gtk.STOCK_SAVE)
@@ -72,7 +66,6 @@ class SitesTab(Gtk.Box):
             if 'ServerName' in site:
                 row.add(Gtk.Label(site['ServerName']))
             self.sites_list_nav.add(row)
-        self.sites_list_nav.connect('row-activated', self.on_list_nav_activated)
 
     def rebuild_list_nav(self):
         pass
@@ -82,8 +75,7 @@ class SitesTab(Gtk.Box):
         self.conf_tree.set_reorderable(True)
         cols = ['Directive', 'Value']
         for index, title in enumerate(cols):
-            cell = Gtk.CellRendererText()
-            cell.set_property('editable', True)
+            cell = Gtk.CellRendererText(editable=True)
             cell.connect('edited', self.on_edit_cell_edited, index)
             col = Gtk.TreeViewColumn(title, cell)
             col.add_attribute(cell, 'text', index)

@@ -2,17 +2,16 @@ import os
 import json
 from collections import OrderedDict
 
-
 class Sites(object):
     def __init__(self):
-        self.file = self.file()
+        self.file = self.file("sites.json")
         if not os.path.isfile(self.file):
             if not os.path.exists(os.path.dirname(self.file)):
                 os.makedirs(os.path.dirname(self.file))
             open(self.file, 'a').close()
 
-    def file(self):
-        return os.path.expanduser('~') + "/.glamp/sites.json"
+    def file(self, file):
+        return os.path.join(os.path.expanduser("~/.glamp"), file)
 
     def read(self):
         with open(self.file, 'r') as f:
