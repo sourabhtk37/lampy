@@ -10,25 +10,25 @@ class Sites(object):
                 os.makedirs(os.path.dirname(self.file))
             open(self.file, 'a').close()
 
-    def file(self, file):
-        return os.path.join(os.path.expanduser("~/.glamp"), file)
+    def file(self, filename):
+        return os.path.join(os.path.expanduser("~/.glamp"), filename)
 
     def read(self):
         with open(self.file, 'r') as f:
             content = f.read()
         if not content:
-            return [{}]
+            return []
         return json.loads(content, object_pairs_hook=OrderedDict)
 
     def write(self, content):
         with open(self.file, 'w') as f:
             json.dump(content, f)
 
-    def update(self, index, directives={}):
+    def update(self, index, properties={}):
         content = self.read()
         count = len(content)
         if index < count:
-            content[index].update(directives)
+            content[index].update(properties)
         self.write(content)
 
     def remove(self, index=[]):

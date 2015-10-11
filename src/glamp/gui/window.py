@@ -1,6 +1,6 @@
 from gi.repository import Gtk
 from collections import OrderedDict
-from glamp.gui.tab import SitesTab
+from glamp.gui.tabs import SitesTab
 
 class MainWindow(Gtk.ApplicationWindow):
      

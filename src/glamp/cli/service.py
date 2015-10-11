@@ -3,17 +3,18 @@ import subprocess
 
 class Service(object):
     def __init__(self):
-        pass
+        self.system = 'systemctl'
 
-    @staticmethod
-    def control(service, command, prefix=""):
-        system = 'systemctl'
-        p = subprocess.Popen(" ".join([prefix, system, command, service]), stdout=subprocess.PIPE, shell=True)
+    def control(self, service, argument, prefix=""):
+        command = {
+            'systemctl': [prefix, self.system, argument, service],
+            'service': [prefix, self.system, service, argument]
+        }
+        p = subprocess.Popen(" ".join(command[self.system]), stdout=subprocess.PIPE, shell=True)
         out, err = p.communicate()
         return out
 
-    @staticmethod
-    def status(service):
+    def status(self, service):
         status = Service.control(service, 'status')
         if "Loaded: loaded" not in status:
             return False
@@ -22,14 +23,11 @@ class Service(object):
         if "Active: active" in status:
             return True
 
-    @staticmethod
-    def start(service):
+    def start(self, service):
         return Service.control(service, 'start', 'gksu')
 
-    @staticmethod
-    def stop(service):
+    def stop(self, service):
         return Service.control(service, 'start', 'gksu')
 
-    @staticmethod
-    def toggle(service):
+    def toggle(self, service):
         pass
