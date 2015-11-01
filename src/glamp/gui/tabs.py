@@ -3,14 +3,12 @@ from collections import OrderedDict
 from glamp.lib.storage import Sites
 
 class SitesTab(Gtk.Box):
-    
-    SPACING = 10
-    PADDING = 5
+    __gtype_name__ = "SitesTab"
     
     def __new__(cls, main_window):
-        box = main_window.builder.get_object("sites_tab_container")
-        box.__class__ = cls
-        return box
+        self = main_window.builder.get_object("sites_tab_container")
+        self.__class__ = cls
+        return self
     
     def __init__(self, main_window):
         self.main_window = main_window
@@ -65,17 +63,19 @@ class SitesTab(Gtk.Box):
         pass
 
     def list_nav_add(self, site):
+        builder = self.main_window.builder.new_from_file("glamp/gui/ui/sites_list_nav_row.xml")
         row = Gtk.ListBoxRow()
-        col = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, homogeneous=True, spacing=0)
-        col.add(Gtk.Label(site['hostname'], margin=self.SPACING, margin_right=self.PADDING))
-        col.add(Gtk.Switch(margin=self.SPACING, margin_left=self.PADDING))
+        col = builder.get_object("sites_list_nav_row")
+        label = builder.get_object("sites_list_nav_row_label")
+        switch = builder.get_object("sites_list_nav_row_switch")
+        label.set_text(site['hostname'])
         row.add(col)
         self.list_nav.add(row)
         self.list_nav.show_all()
 
     def build_conf_tree(self):
         self.conf_tree.set_model(self.conf_model)
-        for index, title in enumerate(['Property', 'Argument']):
+        for index, title in enumerate(['Property', 'Arguments']):
             cell = Gtk.CellRendererText(editable=True)
             cell.connect('edited', self.on_edit_cell_edited, index)
             col = Gtk.TreeViewColumn(title, cell, text=index)
@@ -86,12 +86,12 @@ class SitesTab(Gtk.Box):
         self.edit_address_input.set_text(self.sites[id]['address'])
         self.edit_docroot_input.set_filename(self.sites[id]['docroot'])
         self.conf_model.clear()
-        for property, argument in self.sites[id]['directives'].iteritems():
-            self.conf_tree_add(property, argument)
+        for prop, args in self.sites[id]['directives'].iteritems():
+            self.conf_tree_add(prop, args)
         self.main_window.resize(1, 1)
 
-    def conf_tree_add(self, property=None, argument=None):
-        self.conf_model.append([property, argument])
+    def conf_tree_add(self, prop=None, args=None):
+        self.conf_model.append([prop, args])
         self.conf_tree.show_all()
 
     def on_edit_add_clicked(self, button):
@@ -125,9 +125,9 @@ class SitesTab(Gtk.Box):
 
     def on_list_add_clicked(self, button):
         new = {
-            'hostname': 'virtual.localhost',
-            'address': '127.0.0.1',
-            'docroot': '',
+            'hostname': "virtual.localhost",
+            'address': "127.0.0.1",
+            'docroot': "",
             'directives': {},
         }
         self.sites.append(new)
