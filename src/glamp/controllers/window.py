@@ -1,11 +1,12 @@
 from gi.repository import Gtk
-from glamp.gui.tabs import SitesTab
+
+from glamp.controllers.tabs import SitesTab
+
 
 class MainWindow(Gtk.ApplicationWindow):
-    __gtype_name__ = "MainWindow"
 
     def __new__(cls, application):
-        application.builder.add_from_file("glamp/gui/ui/main_window.xml")
+        application.builder.add_from_file("glamp/views/main_window.xml")
         self = application.builder.get_object("main_window")
         self.__class__ = cls
         return self

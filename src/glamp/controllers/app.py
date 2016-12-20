@@ -1,8 +1,9 @@
-from gi.repository import Gtk, Gio
-from glamp.gui import window
+from gi.repository import Gtk
+
+from glamp.controllers import window
+
 
 class Application(Gtk.Application):
-
     def __init__(self):
         super(Application, self).__init__()
 
@@ -12,3 +13,5 @@ class Application(Gtk.Application):
 
     def on_activate(self, data=None):
         main_window = window.MainWindow(self)
+
+        Gtk.main()

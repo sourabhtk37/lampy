@@ -1,6 +1,7 @@
-import os
 import json
+import os
 from collections import OrderedDict
+
 
 class Sites(object):
     def __init__(self):

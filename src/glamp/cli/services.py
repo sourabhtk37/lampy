@@ -1,6 +1,7 @@
-from gi.repository import Gtk, GObject, Polkit, Gio
-import subprocess
 import os
+import subprocess
+from gi.repository import GObject, Polkit, Gio
+
 
 class Service(object):
     def __init__(self):
@@ -12,7 +13,7 @@ class Service(object):
         return out
 
     def status(self, service):
-        status = self.control(service, 'status', 'gksu')
+        status = self.control(service, 'status', 'pkexec')
         if "Loaded: loaded" not in status:
             return False
         if "Active: inactive" in status:
@@ -21,13 +22,14 @@ class Service(object):
             return True
 
     def start(self, service):
-        return Service.control(service, 'start', 'gksu')
+        return Service.control(service, 'start', 'pkexec')
 
     def stop(self, service):
-        return Service.control(service, 'start', 'gksu')
+        return Service.control(service, 'start', 'pkexec')
 
     def toggle(self, service):
         pass
+
 
 # @todo
 class Auth(object):
@@ -41,12 +43,14 @@ class Auth(object):
         # lockbutton = Gtk.LockButton()
         # lockbutton.connect("clicked", self.check_authorization)
 
-        self.check_authorization()        
+        self.check_authorization()
         self.mainloop.run()
-    
+
     def check_authorization(self):
-        self.authority.check_authorization(self.subject, self.action_id, None, Polkit.CheckAuthorizationFlags.ALLOW_USER_INTERACTION, self.cancellable, self.check_authorization_cb, self.mainloop)
-    
+        self.authority.check_authorization(self.subject, self.action_id, None,
+                                           Polkit.CheckAuthorizationFlags.ALLOW_USER_INTERACTION, self.cancellable,
+                                           self.check_authorization_cb, self.mainloop)
+
     def check_authorization_cb(self, authority, res, loop):
         try:
             result = authority.check_authorization_finish(res)
@@ -57,4 +61,4 @@ class Auth(object):
             else:
                 print("Not authorized")
         except GObject.GError as error:
-             print("Error checking authorization: %s" % error.message)
+            print("Error checking authorization: %s" % error.message)

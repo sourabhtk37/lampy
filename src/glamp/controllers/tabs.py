@@ -1,15 +1,16 @@
-from gi.repository import Gtk
 from collections import OrderedDict
-from glamp.lib.storage import Sites
+from gi.repository import Gtk
+
+from glamp.models.storage import Sites
+
 
 class SitesTab(Gtk.Box):
-    __gtype_name__ = "SitesTab"
-    
+
     def __new__(cls, main_window):
         self = main_window.builder.get_object("sites_tab_container")
         self.__class__ = cls
         return self
-    
+
     def __init__(self, main_window):
         self.main_window = main_window
         self.storage = Sites()
@@ -26,7 +27,7 @@ class SitesTab(Gtk.Box):
         self.list_nav = self.main_window.builder.get_object("sites_list_nav")
         self.conf_tree = self.main_window.builder.get_object("sites_conf_tree")
         self.conf_model = Gtk.ListStore(str, str)
-        
+
         self.edit_hostname_input = self.main_window.builder.get_object("hostname_input")
         self.edit_address_input = self.main_window.builder.get_object("address_input")
         self.edit_docroot_input = self.main_window.builder.get_object("docroot_input")
@@ -63,7 +64,7 @@ class SitesTab(Gtk.Box):
         pass
 
     def list_nav_add(self, site):
-        builder = self.main_window.builder.new_from_file("glamp/gui/ui/sites_list_nav_row.xml")
+        builder = self.main_window.builder.new_from_file("glamp/views/sites_list_nav_row.xml")
         row = Gtk.ListBoxRow()
         col = builder.get_object("sites_list_nav_row")
         label = builder.get_object("sites_list_nav_row_label")
