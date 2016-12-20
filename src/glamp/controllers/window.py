@@ -8,6 +8,7 @@ class MainWindow(object):
 
         self.builder = application.builder
         self.builder.add_from_file("glamp/layouts/main_window.xml")
+
         self.layout = self.builder.get_object("main_window")  # Gtk.ApplicationWindow
         self.layout.connect('delete-event', Gtk.main_quit)
 
