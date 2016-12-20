@@ -4,9 +4,8 @@ from glamp.controllers.tabs import SitesTab
 
 
 class MainWindow(Gtk.ApplicationWindow):
-
     def __new__(cls, application):
-        application.builder.add_from_file("glamp/views/main_window.xml")
+        application.builder.add_from_file("glamp/layouts/main_window.xml")
         self = application.builder.get_object("main_window")
         self.__class__ = cls
         return self

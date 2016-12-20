@@ -5,7 +5,6 @@ from glamp.models.storage import Sites
 
 
 class SitesTab(Gtk.Box):
-
     def __new__(cls, main_window):
         self = main_window.builder.get_object("sites_tab_container")
         self.__class__ = cls
@@ -64,7 +63,7 @@ class SitesTab(Gtk.Box):
         pass
 
     def list_nav_add(self, site):
-        builder = self.main_window.builder.new_from_file("glamp/views/sites_list_nav_row.xml")
+        builder = self.main_window.builder.new_from_file("glamp/layouts/sites_list_nav_row.xml")
         row = Gtk.ListBoxRow()
         col = builder.get_object("sites_list_nav_row")
         label = builder.get_object("sites_list_nav_row_label")
