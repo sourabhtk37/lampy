@@ -4,32 +4,31 @@ from gi.repository import Gtk
 from glamp.models.storage import Sites
 
 
-class SitesTab(Gtk.Box):
-    def __new__(cls, main_window):
-        self = main_window.builder.get_object("sites_tab_container")
-        self.__class__ = cls
-        return self
-
+class SitesTab(object):
     def __init__(self, main_window):
-        self.main_window = main_window
+
+        self.main_window = main_window.layout
+        self.builder = main_window.builder
+        self.layout = self.builder.get_object("sites_tab_container")  # Gtk.Box
+
         self.storage = Sites()
         self.sites = self.storage.read()
         self.list_active = None
 
-        self.list_view = self.main_window.builder.get_object("sites_list_view")
-        self.edit_view = self.main_window.builder.get_object("sites_edit_view")
+        self.list_view = self.builder.get_object("sites_list_view")
+        self.edit_view = self.builder.get_object("sites_edit_view")
 
-        self.list_container = self.main_window.builder.get_object("sites_list_container")
-        self.edit_container = self.main_window.builder.get_object("sites_edit_container")
-        self.conf_container = self.main_window.builder.get_object("sites_conf_container")
+        self.list_container = self.builder.get_object("sites_list_container")
+        self.edit_container = self.builder.get_object("sites_edit_container")
+        self.conf_container = self.builder.get_object("sites_conf_container")
 
-        self.list_nav = self.main_window.builder.get_object("sites_list_nav")
-        self.conf_tree = self.main_window.builder.get_object("sites_conf_tree")
+        self.list_nav = self.builder.get_object("sites_list_nav")
+        self.conf_tree = self.builder.get_object("sites_conf_tree")
         self.conf_model = Gtk.ListStore(str, str)
 
-        self.edit_hostname_input = self.main_window.builder.get_object("hostname_input")
-        self.edit_address_input = self.main_window.builder.get_object("address_input")
-        self.edit_docroot_input = self.main_window.builder.get_object("docroot_input")
+        self.edit_hostname_input = self.builder.get_object("hostname_input")
+        self.edit_address_input = self.builder.get_object("address_input")
+        self.edit_docroot_input = self.builder.get_object("docroot_input")
 
         self.build_list_nav()
         self.build_conf_tree()
@@ -37,18 +36,18 @@ class SitesTab(Gtk.Box):
         self.build_edit_action_bar()
 
     def build_list_action_bar(self):
-        list_remove_button = self.main_window.builder.get_object("sites_list_remove_button")
-        list_add_button = self.main_window.builder.get_object("sites_list_add_button")
-        list_save_button = self.main_window.builder.get_object("sites_list_save_button")
+        list_remove_button = self.builder.get_object("sites_list_remove_button")
+        list_add_button = self.builder.get_object("sites_list_add_button")
+        list_save_button = self.builder.get_object("sites_list_save_button")
 
         list_remove_button.connect('clicked', self.on_list_remove_clicked)
         list_add_button.connect('clicked', self.on_list_add_clicked)
         list_save_button.connect('clicked', self.on_list_save_clicked)
 
     def build_edit_action_bar(self):
-        edit_remove_button = self.main_window.builder.get_object("sites_edit_remove_button")
-        edit_add_button = self.main_window.builder.get_object("sites_edit_add_button")
-        edit_save_button = self.main_window.builder.get_object("sites_edit_save_button")
+        edit_remove_button = self.builder.get_object("sites_edit_remove_button")
+        edit_add_button = self.builder.get_object("sites_edit_add_button")
+        edit_save_button = self.builder.get_object("sites_edit_save_button")
 
         edit_remove_button.connect('clicked', self.on_edit_remove_clicked)
         edit_add_button.connect('clicked', self.on_edit_add_clicked)
@@ -63,7 +62,7 @@ class SitesTab(Gtk.Box):
         pass
 
     def list_nav_add(self, site):
-        builder = self.main_window.builder.new_from_file("glamp/layouts/sites_list_nav_row.xml")
+        builder = self.builder.new_from_file("glamp/layouts/sites_list_nav_row.xml")
         row = Gtk.ListBoxRow()
         col = builder.get_object("sites_list_nav_row")
         label = builder.get_object("sites_list_nav_row_label")

@@ -10,8 +10,7 @@ class Application(Gtk.Application):
         self.connect('activate', self.on_activate)
 
         self.builder = Gtk.Builder()
+        self.main_window = window.MainWindow(self)
 
     def on_activate(self, data=None):
-        main_window = window.MainWindow(self)
-
         Gtk.main()
