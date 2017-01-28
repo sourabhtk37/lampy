@@ -1,7 +1,7 @@
 from collections import OrderedDict
 from gi.repository import Gtk
 
-from glamp.models.storage import Sites
+from lampy.models.storage import Sites
 
 
 class SitesTab(object):
@@ -62,7 +62,7 @@ class SitesTab(object):
         pass
 
     def list_nav_add(self, site):
-        builder = self.builder.new_from_file("glamp/layouts/sites_list_nav_row.xml")
+        builder = self.builder.new_from_file("lampy/layouts/sites_list_nav_row.xml")
         row = Gtk.ListBoxRow()
         col = builder.get_object("sites_list_nav_row")
         label = builder.get_object("sites_list_nav_row_label")

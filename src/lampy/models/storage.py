@@ -12,7 +12,7 @@ class Sites(object):
             open(self.file, 'a').close()
 
     def file(self, filename):
-        return os.path.join(os.path.expanduser("~/.glamp"), filename)
+        return os.path.join(os.path.expanduser("~/.lampy"), filename)
 
     def read(self):
         with open(self.file, 'r') as f:
